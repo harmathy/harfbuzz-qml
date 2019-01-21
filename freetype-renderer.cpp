@@ -97,14 +97,14 @@ const char* FontManagement::copyFcString(const FcChar8* fcString)
 /* FreeTypeParameters */
 /**********************/
 
-FreeTypeParameters::FreeTypeParameters(KXftConfig* options)
+FreeTypeParameters::FreeTypeParameters(KXftConfig options)
     : loadFlags(FT_LOAD_DEFAULT), renderMode(FT_RENDER_MODE_NORMAL)
 {
-    if (options->antialiasingSetting == KXftConfig::AntiAliasing::Disabled) {
+    if (options.antialiasingSetting == KXftConfig::AntiAliasing::Disabled) {
         renderMode = FT_RENDER_MODE_MONO;
         loadFlags |= FT_LOAD_MONOCHROME;
-        if (options->hintingSetting == KXftConfig::Hinting::Disabled
-            || options->hintstyleSetting == KXftConfig::Hint::None) {
+        if (options.hintingSetting == KXftConfig::Hinting::Disabled
+            || options.hintstyleSetting == KXftConfig::Hint::None) {
             loadFlags |= FT_LOAD_NO_HINTING;
         } else {
             loadFlags |= FT_LOAD_TARGET_MONO;
@@ -112,7 +112,7 @@ FreeTypeParameters::FreeTypeParameters(KXftConfig* options)
     } else {
         // bitmap fonts are disabled when anti-aliasing is used
         loadFlags |= FT_LOAD_NO_BITMAP;
-        switch (options->hintstyleSetting) {
+        switch (options.hintstyleSetting) {
         case KXftConfig::Hint::NotSet:
         case KXftConfig::Hint::None:
             loadFlags |= FT_LOAD_NO_HINTING;
@@ -123,7 +123,7 @@ FreeTypeParameters::FreeTypeParameters(KXftConfig* options)
             break;
         case KXftConfig::Hint::Full:
             // apply hinting appropriate for (sub-)pixel configuration
-            switch (options->subpixelSetting) {
+            switch (options.subpixelSetting) {
             case KXftConfig::SubPixel::NotSet:
             case KXftConfig::SubPixel::None:
                 loadFlags |= FT_LOAD_TARGET_NORMAL;
@@ -139,7 +139,7 @@ FreeTypeParameters::FreeTypeParameters(KXftConfig* options)
             }
         }
         // set render mode for subpixel rendering
-        switch (options->subpixelSetting) {
+        switch (options.subpixelSetting) {
         case KXftConfig::SubPixel::Rgb:
         case KXftConfig::SubPixel::Bgr:
             renderMode = FT_RENDER_MODE_LCD;
@@ -454,11 +454,11 @@ void GlyphData::paint(QImage* canvas, int x, int y, const QColor& pen)
 /* FontShaping */
 /***************/
 
-inline bool _subpixel_reverse(KXftConfig* options)
+inline bool _subpixel_reverse(KXftConfig options)
 {
-    if (options->subpixelSetting == KXftConfig::SubPixel::Bgr)
+    if (options.subpixelSetting == KXftConfig::SubPixel::Bgr)
         return true;
-    if (options->subpixelSetting == KXftConfig::SubPixel::Vbgr)
+    if (options.subpixelSetting == KXftConfig::SubPixel::Vbgr)
         return true;
     return false;
 }
@@ -468,7 +468,7 @@ FontShaping::FontShaping(FreeTypeLibrary* freetypeLib,
                          const char* text,
                          const char* font,
                          double pointSize,
-                         KXftConfig* options)
+                         KXftConfig options)
 {
     auto harfbuzzBuffer = hb_buffer_create();
 
@@ -490,7 +490,7 @@ FontShaping::FontShaping(FreeTypeLibrary* freetypeLib,
 
     auto hbFont = hb_ft_font_create(fontFace, nullptr);
 
-    bool is_hinted = options->hintstyleSetting != KXftConfig::Hint::None;
+    bool is_hinted = options.hintstyleSetting != KXftConfig::Hint::None;
     hb_font_set_ppem(hbFont, is_hinted ? fontFace->size->metrics.x_ppem : 0,
                      is_hinted ? fontFace->size->metrics.y_ppem : 0);
 
@@ -578,7 +578,7 @@ QRectF FontShaping::getBoundingBox() const
 QImage FreeTypeFontPreviewRenderer ::renderText(const char* text,
                                                 const char* font,
                                                 double pointSize,
-                                                KXftConfig* options,
+                                                KXftConfig options,
                                                 QColor background,
                                                 QColor pen)
 {

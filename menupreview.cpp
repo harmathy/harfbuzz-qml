@@ -32,19 +32,9 @@ static const int MAX_PREVIEW_HIGHT = 240;
 
 PreviewParameters::PreviewParameters(const QString& fontFamily,
                                      double pointSize,
-                                     KXftConfig* options)
+                                     KXftConfig options)
     : fontFamily(fontFamily), pointSize(pointSize), options(options)
 {
-}
-
-PreviewParameters::PreviewParameters(const PreviewParameters& value)
-    : PreviewParameters(value.fontFamily, value.pointSize, new KXftConfig(*value.options))
-{
-}
-
-PreviewParameters::~PreviewParameters()
-{
-    delete options;
 }
 
 PreviewParameters PreviewParameters::fromString(const QString& id, uint dpiH, uint dpiV)
@@ -68,16 +58,16 @@ PreviewParameters PreviewParameters::fromString(const QString& id, uint dpiH, ui
         hintingSetting = KXftConfig::Hinting::Disabled;
     }
     return PreviewParameters(fontFamily, pointSize,
-                             new KXftConfig(antialiasingSetting, hintingSetting, hintstyleSetting,
-                                            subpixelSetting, dpiH, dpiV));
+                             KXftConfig(antialiasingSetting, hintingSetting, hintstyleSetting,
+                                        subpixelSetting, dpiH, dpiV));
 }
 
 QString PreviewParameters::toFormatetString()
 {
     auto typeface = QString("%1 %2").arg(fontFamily).arg(pointSize);
-    auto antialiasing = options->getAaState();
-    auto hint = options->getHintstyle();
-    auto subpixel = options->getSubpixelState();
+    auto antialiasing = options.getAaState();
+    auto hint = options.getHintstyle();
+    auto subpixel = options.getSubpixelState();
     return QString("Typeface:\t%1\nAnti-Aliasing:\t%2\nHinting Style:\t%3\nSub-Pixel Order:\t%4")
         .arg(typeface, antialiasing, hint, subpixel);
 }

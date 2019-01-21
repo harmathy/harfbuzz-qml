@@ -36,11 +36,9 @@ class PreviewParameters
 public:
     QString fontFamily;
     double pointSize;
-    KXftConfig* options;
+    KXftConfig options;
 
-    PreviewParameters(const QString& fontFamily, double pointSize, KXftConfig* options);
-    PreviewParameters(const PreviewParameters& value);
-    virtual ~PreviewParameters();
+    PreviewParameters(const QString& fontFamily, double pointSize, KXftConfig options);
     static PreviewParameters fromString(const QString& id, uint dpiH = 72, uint dpiV = 72);
     QString toFormatetString();
 };

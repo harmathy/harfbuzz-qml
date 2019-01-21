@@ -87,7 +87,7 @@ public:
      * Convert rendering options from the commonly used Fontconfig style into parameters for
      * FreeType. FreeTypeParameters does not take ownership of the KXftConfig object.
      */
-    FreeTypeParameters(KXftConfig* options);
+    FreeTypeParameters(KXftConfig options);
 
     int loadFlags;
     FT_Render_Mode renderMode;
@@ -451,7 +451,7 @@ public:
                 const char* text,
                 const char* font,
                 double pointSize,
-                KXftConfig* options);
+                KXftConfig options);
 
     ~FontShaping();
 
@@ -497,7 +497,7 @@ public:
     QImage renderText(const char* text,
                       const char* font,
                       double pointSize,
-                      KXftConfig* options,
+                      KXftConfig options,
                       QColor background,
                       QColor pen);
 };
