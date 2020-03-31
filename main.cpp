@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
     QQmlApplicationEngine engine;
     engine.addImageProvider(QLatin1String("renderpreview"), new MenuPreviewImageProvider);
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:///qml/qmlDeploy/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
     return app.exec();
